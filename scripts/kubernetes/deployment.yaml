@@ -1,1 +1,74 @@
-# Your Solution
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-catalog
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: book-catalog
+  template:
+    metadata:
+      labels:
+        app: book-catalog
+    spec:
+      containers:
+      - name: book-catalog
+        image: sit722part4.azurecr.io/book_catalog:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://sumeet_sit722_part4_user:T8Gck7lCd3yWYq637CL9PWtoWwjKy5OE@dpg-cro5rm2j1k6c739evdhg-a.oregon-postgres.render.com:5432/sumeet_sit722_part4?sslmode=require"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-catalog-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: book-catalog
+  ports:
+  - protocol: TCP
+    port: 80 
+    targetPort: 80  
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-management
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: inventory-management
+  template:
+    metadata:
+      labels:
+        app: inventory-management
+    spec:
+      containers:
+      - name: inventory-management
+        image: sit722part4.azurecr.io/inventory_management:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://sumeet_sit722_part4_user:T8Gck7lCd3yWYq637CL9PWtoWwjKy5OE@dpg-cro5rm2j1k6c739evdhg-a.oregon-postgres.render.com:5432/sumeet_sit722_part4?sslmode=require"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-management-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: inventory-management
+  ports:
+  - protocol: TCP
+    port: 80 
+    targetPort: 80

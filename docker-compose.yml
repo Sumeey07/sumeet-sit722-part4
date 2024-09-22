@@ -1,1 +1,34 @@
-# Your Solution
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: sumeet_sit722_part4_user
+      POSTGRES_PASSWORD: T8Gck7lCd3yWYq637CL9PWtoWwjKy5OE
+      POSTGRES_DB: sumeet_sit722_part4
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  book_catalog:
+    build: ./book_catalog
+    image: sit722part4.azurecr.io/book_catalog:latest
+    ports:
+      - "8000:80"
+    environment:
+      DATABASE_URL: "postgresql://sumeet_sit722_part4_user:T8Gck7lCd3yWYq637CL9PWtoWwjKy5OE@dpg-cro5rm2j1k6c739evdhg-a.oregon-postgres.render.com:5432/sumeet_sit722_part4?sslmode=require"
+    depends_on:
+      - postgres
+
+  inventory_management:
+    build: ./inventory_management
+    image: sit722part4.azurecr.io/inventory_management:latest
+    ports:
+      - "8001:80"
+    environment:
+      DATABASE_URL: "postgresql://sumeet_sit722_part4_user:T8Gck7lCd3yWYq637CL9PWtoWwjKy5OE@dpg-cro5rm2j1k6c739evdhg-a.oregon-postgres.render.com:5432/sumeet_sit722_part4?sslmode=require"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
